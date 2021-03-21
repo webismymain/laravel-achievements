@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Assada\Achievements;
@@ -117,15 +118,17 @@ trait EntityRelationsAchievements
     public function syncAchievements(): void
     {
         /** @var Collection $locked */
-        $locked = AchievementDetails::getUnsyncedByAchiever($this);
-        $locked->each(
-            function ($el) {
-                $progress = new AchievementProgress();
-                $progress->details()->associate($el);
-                $progress->achiever()->associate($this);
-                $progress->points = 0;
-                $progress->save();
-            }
-        );
+        if ($this->id) {
+            $locked = AchievementDetails::getUnsyncedByAchiever($this);
+            $locked->each(
+                function ($el) {
+                    $progress = new AchievementProgress();
+                    $progress->details()->associate($el);
+                    $progress->achiever()->associate($this);
+                    $progress->points = 0;
+                    $progress->save();
+                }
+            );
+        }
     }
 }
